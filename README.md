@@ -1,5 +1,7 @@
 # slm - Lightweight SSH Login Manager
 
+[中文 README](https://github.com/31i45/slm---Lightweight-SSH-Login-Manager/blob/main/README-cn.md)
+
 ## Introduction
 `slm` (SSH Login Manager) is a **concise, elegant, UNIX-philosophy-compliant** remote host management script, designed specifically for managing SSH login information of remote hosts and enabling passwordless login.
 
