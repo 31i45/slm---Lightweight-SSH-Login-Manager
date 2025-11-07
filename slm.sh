@@ -54,8 +54,10 @@ cmd_add() {
     grep -q "^$ip|" "$SLM_FILE" && echo "错误: 主机 $ip 已存在" && return 1
     
     # 添加主机
+    # 先获取当前行数，然后加1作为新主机ID
+    local new_id=$(( $(grep -c "^" "$SLM_FILE") + 1 ))
     echo "$ip|$user|$port|$tag" >> "$SLM_FILE"
-    echo "主机添加成功: $tag ($ip) [ID: $(grep -c "^" "$SLM_FILE")]"
+    echo "主机添加成功: $tag ($ip) [ID: $new_id]"
 }
 
 # 删除主机
@@ -64,9 +66,8 @@ cmd_del() {
     
     local info=$(find_host "$1") || return $?
     
-    # 一次提取多个字段
-    local ip=$(echo "$info" | cut -d' ' -f1)
-    local tag=$(echo "$info" | cut -d' ' -f4)
+    # 使用read命令一次性提取多个字段，更高效
+    read -r ip _ _ tag <<< "$info"
     
     echo "删除主机: $tag ($ip)"
     # 使用 && 确保前面命令成功才执行后面的
@@ -79,11 +80,8 @@ cmd_edit() {
     
     local info=$(find_host "$1") || return $?
     
-    # 提取旧信息
-    local old_ip=$(echo "$info" | cut -d' ' -f1)
-    local old_user=$(echo "$info" | cut -d' ' -f2)
-    local old_port=$(echo "$info" | cut -d' ' -f3)
-    local old_tag=$(echo "$info" | cut -d' ' -f4)
+    # 使用read命令一次性提取多个字段，更高效
+    read -r old_ip old_user old_port old_tag <<< "$info"
     
     # 设置新值 (保留原值如果未提供新值)
     local new_ip=${2:-$old_ip}
