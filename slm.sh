@@ -101,8 +101,9 @@ cmd_list() {
     [[ ! -s "$SLM_FILE" ]] && echo "暂无主机记录" && return 0
     
     # 使用纯awk实现全部功能，更符合Unix哲学
-    awk -F'|' 'BEGIN {printf "ID\tIP\t用户名\t端口\t标签\n--\t--\t----\t--\t---\n"} 
-                {printf "%d\t%s\t%s\t%s\t%s\n", NR, $1, $2, $3, $4}' "$SLM_FILE"
+    awk -F'|' 'BEGIN {printf "%-4s %-15s %-10s %-5s %s\n", "ID", "IP", "UserName", "Port", "Tag"; 
+                      printf "%-4s %-15s %-10s %-5s %s\n", "----", "---------------", "----------", "-----", "----------"} 
+                {printf "%-4d %-15s %-10s %-5s %s\n", NR, $1, $2, $3, $4}' "$SLM_FILE"
 }
 
 # 登录主机
