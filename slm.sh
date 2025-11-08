@@ -97,13 +97,14 @@ cmd_edit() {
 
 # 列出主机
 cmd_list() {
-    # 检查文件是否为空
     [[ ! -s "$SLM_FILE" ]] && echo "暂无主机记录" && return 0
-    
-    # 使用纯awk实现全部功能，更符合Unix哲学
-    awk -F'|' 'BEGIN {printf "%-4s %-15s %-10s %-5s %s\n", "ID", "IP", "UserName", "Port", "Tag"; 
-                      printf "%-4s %-15s %-10s %-5s %s\n", "----", "---------------", "----------", "-----", "----------"} 
-                {printf "%-4d %-15s %-10s %-5s %s\n", NR, $1, $2, $3, $4}' "$SLM_FILE"
+    # 表头 + 数据行，用 | 分隔，交给 column 自动对齐
+    { 
+        echo "ID|IP|UserName|Port|Tag"
+        echo "----|---------------|----------|-----|------"  # 分隔线与内容匹配
+        # 给每行数据添加 ID（行号）
+        awk -F'|' '{print NR "|" $0}' "$SLM_FILE"
+    } | column -t -s '|'  # 以 | 为分隔符，自动对齐列
 }
 
 # 登录主机
